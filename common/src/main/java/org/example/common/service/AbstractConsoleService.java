@@ -18,8 +18,13 @@ public abstract class AbstractConsoleService {
             System.out.print("#> ");
             String line = scanner.nextLine();
             log.debug("User enter: {}", line);
-            if (proceedCommand(commandParser.parse(line))) {
-                break;
+            try {
+                if (proceedCommand(commandParser.parse(line))) {
+                    break;
+                }
+            } catch (Exception e) {
+                log.error("Failed to parse command", e);
+                System.out.println(e.getMessage());
             }
         }
     }

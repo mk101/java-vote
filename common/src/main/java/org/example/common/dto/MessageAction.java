@@ -33,6 +33,12 @@ public enum MessageAction {
      */
     DELETE,
 
+    /**
+     * payload: topic -> string, vote -> string
+     * return payload: questions -> string[]
+     */
+    GET_VOTE,
+
     OK,
     UNAUTHORISED,
     /**

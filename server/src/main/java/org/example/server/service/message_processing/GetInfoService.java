@@ -1,6 +1,7 @@
 package org.example.server.service.message_processing;
 
 import lombok.RequiredArgsConstructor;
+import org.example.common.dto.MessageDto;
 import org.example.server.model.Topic;
 import org.example.server.model.Vote;
 import org.example.server.repository.Repository;
@@ -48,9 +49,29 @@ public class GetInfoService {
         return result;
     }
 
+    public List<String> getVoteQuestions(MessageDto message) {
+        if (!message.getPayload().containsKey("topic") || !message.getPayload().containsKey("vote")) {
+            throw new IllegalArgumentException("Missing required parameter");
+        }
+        String topic = (String) message.getPayload().get("topic");
+        String name = (String) message.getPayload().get("vote");
+
+        Optional<Topic> optional = repository.getTopicByName(topic);
+        if (optional.isEmpty()) {
+            throw new NullPointerException(String.format("Topic with name '%s' doesn't exist", topic));
+        }
+
+        Vote vote = optional.get().getVotes().get(name);
+        if (vote == null) {
+            throw new NullPointerException(String.format("Vote %s not found", name));
+        }
+
+        return new ArrayList<>(vote.getAnswers().keySet().stream().toList());
+    }
+
     private String formatTopic(Topic topic) {
         int count = topic.getVotes().values().stream().reduce(0, this::voteAccumulator, Integer::sum);
-        return String.format("%s (votes in topic=%s", topic.getName(), count);
+        return String.format("%s (votes in topic=%s)", topic.getName(), count);
     }
 
     private Integer voteAccumulator(Integer result, Vote vote) {

@@ -10,16 +10,14 @@ import java.util.Properties;
 @Slf4j
 public class ApplicationContext {
 
-    private static final String PROPERTIES_FILENAME = "application.properties";
-
     private final Map<String, Object> beans = new HashMap<>();
     private final Properties properties = new Properties();
 
     private static ApplicationContext instance = null;
 
-    protected ApplicationContext() {
+    protected ApplicationContext(String file) {
         try {
-            properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(PROPERTIES_FILENAME));
+            properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(file));
         } catch (IOException | NullPointerException e) {
             log.error("Can't load properties", e);
             System.exit(-1);
@@ -43,9 +41,14 @@ public class ApplicationContext {
         return properties.getProperty(name);
     }
 
+    public static ApplicationContext initialize(String propertyFile) {
+        instance = new ApplicationContext(propertyFile);
+        return instance;
+    }
+
     public static ApplicationContext get() {
         if (instance == null) {
-            instance = new ApplicationContext();
+            throw new IllegalStateException("Context is not initialized");
         }
 
         return instance;

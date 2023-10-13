@@ -30,7 +30,7 @@ public class GetInfoServiceTests {
 
     @Test
     public void getTopicsInfo() {
-        String expect = "t (votes in topic=3";
+        String expect = "t (votes in topic=3)";
         Vote vote = new Vote("v", "d", Map.of("1", Set.of("a", "b"), "2", Set.of("c"), "3", Set.of()), "usr");
         Topic topic = new Topic("t", Map.of("v", vote));
         when(repository.getAllTopics()).thenReturn(Lists.newArrayList(topic));

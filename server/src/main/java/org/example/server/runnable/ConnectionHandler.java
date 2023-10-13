@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.common.dto.MessageDto;
 import org.example.server.dispatcher.MessageDispatcher;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.net.Socket;
 
 @Slf4j
@@ -25,8 +25,8 @@ public class ConnectionHandler implements Runnable {
     @SneakyThrows
     public void run() {
         log.info("Connected from {}:{}", socket.getInetAddress().getHostName(), socket.getPort());
-        ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+        DataOutputStream output = new DataOutputStream(socket.getOutputStream());
+        DataInputStream input = new DataInputStream(socket.getInputStream());
 
         String rawMessage = input.readUTF();
         log.debug("Receive {}", rawMessage);
@@ -37,8 +37,6 @@ public class ConnectionHandler implements Runnable {
         output.writeUTF(objectMapper.writeValueAsString(result));
         output.flush();
 
-        output.close();
-        input.close();
         socket.close();
         log.info("Close connection");
     }

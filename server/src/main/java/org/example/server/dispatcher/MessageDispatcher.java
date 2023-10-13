@@ -72,6 +72,11 @@ public class MessageDispatcher {
                     yield new MessageDto(new HeaderDto(SERVER_USERNAME, MessageAction.OK), new HashMap<>());
                 }
 
+                case GET_VOTE -> {
+                    List<String> questions = getInfoService.getVoteQuestions(message);
+                    yield new MessageDto(new HeaderDto(SERVER_USERNAME, MessageAction.OK), Map.of("questions", questions));
+                }
+
                 default -> throw new RuntimeException("Unknown action");
             };
         } catch (Exception e) {

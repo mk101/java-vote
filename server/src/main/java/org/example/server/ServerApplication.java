@@ -15,13 +15,17 @@ import org.example.server.service.message_processing.*;
 @Slf4j
 public class ServerApplication {
 
+    private static final String PROPERTY_FILE = "server.properties";
+
     public void launch() {
         printLogo();
-        ApplicationContext context = ApplicationContext.get();
+        ApplicationContext context = ApplicationContext.initialize(PROPERTY_FILE);
         initializeContext(context);
 
         context.<LaunchService>getBean("launchService").launchServer();
         context.<ConsoleService>getBean("consoleService").acceptCommand();
+
+        System.exit(0);
     }
 
     private void initializeContext(ApplicationContext context) {
